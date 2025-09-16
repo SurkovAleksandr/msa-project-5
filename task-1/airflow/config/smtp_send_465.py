@@ -4,8 +4,8 @@ from email.mime.text import MIMEText
 # настройки подключения в mail.ru -> Пароли для внешних приложений
 SMTP_SERVER = "smtp.mail.ru"
 SMTP_PORT = 465  # SMTPS порт с SSL
-USERNAME = "alesur@bk.ru"
-PASSWORD = "Ga2igqxHY16ykTg3YXeV"
+USERNAME = "---"
+PASSWORD = "----"
 
 sender_email = USERNAME
 receiver_email = "surkov.jvm@gmail.com"
