@@ -3,8 +3,8 @@ from email.mime.text import MIMEText
 
 SMTP_SERVER = "smtp.mail.ru"
 SMTP_PORT = 587  # TLS порт
-USERNAME = "alesur@bk.ru"
-PASSWORD = "Ga2igqxHY16ykTg3YXeV"
+USERNAME = "----"
+PASSWORD = "-----"
 
 sender_email = USERNAME
 receiver_email = "surkov.jvm@gmail.com"
