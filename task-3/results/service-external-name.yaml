@@ -1,0 +1,13 @@
+# Предоставление доступа из CronJob к БД PostgreSQL на хосте
+kind: Service
+apiVersion: v1
+metadata:
+  name: postgres
+  namespace: default
+spec:
+  type: ExternalName
+  # localhost тут не подойдет. Нужно специальное имя host.minikube.internal
+  externalName: host.minikube.internal
+  ports:
+    - name: port
+      port: 5432

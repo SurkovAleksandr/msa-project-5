@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: export-to-csv-config
+data:
+  POSTGRES_HOST: "postgres"
+  POSTGRES_PORT: "5432"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "postgres"
+  POSTGRES_DATABASE: "postgres"
+  EXPORT_TABLE_NAME: "shipments"
+  OUTPUT_FILE: "/export-data/output.csv"

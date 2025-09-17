@@ -1,0 +1,28 @@
+# Deployment используется только для отладки приложения
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: export-to-csv
+spec:
+  replicas: 1   # количество подов
+  selector:
+    matchLabels:
+      app: export-to-csv
+  template:
+    metadata:
+      labels:
+        app: export-to-csv
+    spec:
+      containers:
+        - name: export-to-csv
+          image: export_to_csv:IMAGE_TAG_PLACEHOLDER
+          envFrom:
+            - configMapRef:
+                name: export-to-csv-config
+          volumeMounts:
+            - name: export-storage
+              mountPath: /export-data
+      volumes:
+        - name: export-storage
+          persistentVolumeClaim:
+            claimName: export-pvc

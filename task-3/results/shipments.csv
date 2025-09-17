@@ -1,0 +1,6 @@
+id;customer_name;shipment_date;status;amount
+1;ООО Ромашка;2025-08-01;delivered;1500.50
+2;ИП Иванов;2025-08-03;in_transit;2300.00
+3;ЗАО Пример;2025-08-05;pending;1200.75
+4;ООО Вектор;2025-08-07;delivered;3200.00
+5;ИП Петров;2025-08-09;cancelled;0.00

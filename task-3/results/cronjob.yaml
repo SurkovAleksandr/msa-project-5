@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: export-to-csv
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            # название должно быть без _
+            - name: export-to-csv
+              image: export_to_csv:IMAGE_TAG_PLACEHOLDER
+              envFrom:
+                - configMapRef:
+                    name: export-to-csv-config
+              volumeMounts:
+                - name: export-storage
+                  mountPath: /export-data # путь в контейнере, куда монтируется volume
+
+          volumes:
+            - name: export-storage
+              hostPath:
+                path: /export-data   # путь внутри виртуальной машины minikube, куда проброшена локальная папка
+                type: DirectoryOrCreate
+#          volumes:
+#            - name: export-storage
+#              persistentVolumeClaim:
+#                claimName: export-pvc
+
+#              volumeMounts:
+#                - name: data
+#                  mountPath: /export-data
+#          volumes:
+#            - name: data
+#              emptyDir: { }
+          restartPolicy: OnFailure
+  # Количество подов, которые выполнились успешно и упали и будут оставаться не удаленными.
+  # 3 и 1 значения по умолчанию.
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
