@@ -11,11 +11,9 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 @Configuration
@@ -57,9 +55,15 @@ public class BatchConfiguration {
 
 	@Bean
 	public Step step1(JobRepository jobRepository, DataSourceTransactionManager transactionManager,
-					  FlatFileItemReader<Product> reader, ProductItemProcessor processor, JdbcBatchItemWriter<Product> writer) {
+					  FlatFileItemReader<Product> reader, ProductItemProcessor processor, JdbcBatchItemWriter<Product> writer,
+					  StepItemReadListener stepItemReadListener) {
 		return new StepBuilder("step1", jobRepository)
 			.<Product, Product>chunk(3, transactionManager)
+			.listener(stepItemReadListener)
+			// Позволяет повторно запускать Step - помним, что в БД сохраняется информаци о выполнение жага(или джоба)
+			// и если шаг выполняется с теми же параметрами, то не будет выполняться.
+			// Повторный запуск можно делать на уровне Job используя .incrementer(new RunIdIncrementer())
+			.allowStartIfComplete(true)
 			.reader(reader)
 			.processor(processor)
 			.writer(writer)
