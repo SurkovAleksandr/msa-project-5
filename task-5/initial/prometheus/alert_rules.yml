@@ -1,0 +1,12 @@
+groups:
+  - name: write_less_read
+    rules:
+      - alert: AppWriteLessRead
+        expr: writeCount < readCount
+        for: 20s
+        labels:
+          severity: critical
+          service: app
+        annotations:
+          summary: "Количество записей меньше количества чтений"
+          description: "Сервис {{ $labels.instance }} с джобой {{ $labels.job }} записал меньши данных чем прочитал."

@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+Статьи:
+ - https://habr.com/ru/articles/521950/
+-->
 <configuration>
     <property resource="application.properties"/>
     <contextName>${spring.application.name}</contextName>

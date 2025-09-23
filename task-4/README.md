@@ -41,7 +41,7 @@ docker compose -f ./complete/docker-compose.yml up
 
 При запуске приложения необходимо создать таблицы в БД использую любой удобный клиент, используя скрипты расположенные здесь
 
-    *task-4/initial/src/main/resources/schema-all.sql*
+    *task-4/initial/src/main/resources/schema.sql*
 
 Получаемые компоненты:
 - PostgreSQL (порт 5432)(5432 host машина)

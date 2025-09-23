@@ -1,8 +1,6 @@
-version: "3.8"
-
 services:
   postgresdb:
-    image: postgres
+    image: postgres:17.5
     restart: unless-stopped
     env_file: ./.env
     environment:
@@ -70,6 +68,7 @@ services:
     restart: 'unless-stopped'
     volumes:
       - './prometheus/prometheus.yml:/etc/prometheus/prometheus.yml'
+      - './prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml'
     ports:
       - '9090:9090'
     healthcheck:
@@ -90,13 +89,44 @@ services:
     healthcheck:
       test: [ "CMD", "nc", "-z", "localhost", "3000" ]
 
+  # prometheus работает по принципу pull, т.е. сам забирает метрики.
+  # Для Spring Batch это не подходит, т.к. приложение завершается и метрики результата работы
+  # могут не попасть в prometheus.
+  # Чтобы этого избежать можно самому приложению публиковать метрики в промежуточный сервис.
+  # Для prometheus это pushgateway.
+  pushgateway:
+    image: prom/pushgateway:v1.11.1
+    ports:
+      - 9091:9091
+
+  alertmanager:
+    image: prom/alertmanager:v0.28.0
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - ./alertmanager/templates:/etc/alertmanager/templates
+      - alertmanager-data:/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+      - '--log.level=debug'
+      - '--web.external-url=http://localhost:9093'
+    depends_on:
+      - prometheus
+
   app:
     depends_on:
       - postgresdb
-      - filebeat1
+      - filebeat
       - grafana
     image: batch-processing
     build:
       context: .
       dockerfile: ./Dockerfile
+    ports:
+      - 8080:8080
     restart: no
+
+volumes:
+  alertmanager-data:

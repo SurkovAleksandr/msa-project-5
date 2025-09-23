@@ -1,0 +1,32 @@
+global:
+  resolve_timeout: 1m
+
+route:
+  receiver: 'email-app'
+
+  group_by: ['alertname', 'severity']
+  group_wait: 30s
+  group_interval: 1m
+  repeat_interval: 5m
+
+  routes:
+    - match:
+        severity: critical
+        service: app
+      receiver: 'email-app'
+      group_by: [ 'alertname' ]
+      group_wait: 10s
+      group_interval: 1m
+      repeat_interval: 2m
+
+receivers:
+  - name: 'email-app'
+    email_configs:
+      - to: 'email@email.ru'
+        from: 'email@email.ru'
+        smarthost: 'smtp.mail.ru:587'  # smtp-сервер, например, smtp.gmail.com:587
+        auth_username: 'email@email.ru'
+        auth_password: 'auth_password'
+        # можно задать дополнительные параметры, например subject:
+        headers:
+          subject: 'Prometheus Alert'
